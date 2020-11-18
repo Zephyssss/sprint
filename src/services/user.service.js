@@ -1,6 +1,7 @@
 import axios from "axios";
+import {URL} from "./url.js"
 
-const API_URL_BASE = "https://sprintretrospective.herokuapp.com/api/v1/user";
+const API_URL_BASE = URL + "user";
 const user = JSON.parse(localStorage.getItem("user"));
 
 const retriveUser = () => {

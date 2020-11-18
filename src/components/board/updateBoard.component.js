@@ -2,7 +2,9 @@ import React, { useState, useRef } from "react";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
+import io from "socket.io-client";
 
+const ioClient = io.connect("https://sprintretrospective.herokuapp.com");
 const { updateBoard } = require("../../services/board.service.js")
 
 const required = (value) => {
@@ -43,6 +45,7 @@ const UpdateBoard = (props) => {
     if (checkBtn.current.context._errors.length === 0) {
       updateBoard(idboard, name)
       .then((response)=>{
+        ioClient.emit("changeboard",{data: "updateboard"})
         localStorage.removeItem("updateboard")
         props.history.push("/");
         window.location.reload();

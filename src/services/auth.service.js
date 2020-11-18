@@ -1,6 +1,7 @@
 import axios from "axios";
+import {URL} from "./url.js"
 
-const API_URL_BASE = "https://sprintretrospective.herokuapp.com/api/v1/auth/";
+const API_URL_BASE = URL + "auth/";
 
 //call api login
 const login = (username, password) => {

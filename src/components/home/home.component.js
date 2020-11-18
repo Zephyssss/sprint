@@ -1,8 +1,11 @@
 import React, { useState, useEffect} from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../tag/tag.css"
-
+import io from "socket.io-client";
 import Board from "../board/board.component.js";
+
+const ioClient = io.connect("https://sprintretrospective.herokuapp.com");
+
 const { retriveBoards } = require("../../services/board.service.js");
 const { deleteBoard } = require("../../services/board.service.js");
 const { logout } = require("../../services/auth.service.js");
@@ -12,6 +15,16 @@ const Home = (props) => {
   const user =JSON.parse(localStorage.getItem("user"))
 
   useEffect(() => {
+    ioClient.on("changeboardhandle", (msg) =>{
+      retriveBoards()
+      .then((response) => {
+        setboards(response.data.data);
+      })
+      .catch((err) => {
+        console.log("home.component.js " + err);
+      });
+    });
+
     retriveBoards()
       .then((response) => {
         setboards(response.data.data);
@@ -29,6 +42,7 @@ const Home = (props) => {
   const onClickDelete = (id)=>{
     deleteBoard(id)
     .then((response)=>{
+      ioClient.emit("changeboard",{data: "deleteboard"})
       const newBoards = boards.filter((board)=>{
         return board._id!=id
       })
